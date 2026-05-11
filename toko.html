@@ -53,52 +53,37 @@
       .btn-cancel { background-color: #2a2a2a; color: #ff4d4d; border: 1px solid #444; flex: 0.3; }
       .btn:hover { opacity: 0.8; }
 
-      /* Floating Cart Update */
+      /* --- STYLE KERANJANG DI POJOK KANAN --- */
       .cart-notif { 
         position: fixed; 
-        bottom: 30px; 
-        left: 50%; 
-        transform: translateX(-50%); 
-        background: var(--primary); 
+        bottom: 20px; 
+        right: 20px; 
+        background: rgba(196, 155, 99, 0.95); 
+        backdrop-filter: blur(8px);
         color: white; 
-        padding: 20px; 
-        border-radius: 20px; 
+        padding: 15px; 
+        border-radius: 15px; 
         z-index: 3000; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
         display: none; 
-        width: 90%; 
-        max-width: 400px;
-        animation: slideUp 0.4s ease; 
+        width: 260px; 
+        animation: slideInRight 0.4s ease; 
       }
-      
+
       #cartList {
-        font-size: 0.9rem;
-        margin-bottom: 15px;
-        max-height: 120px;
+        margin-bottom: 10px;
+        max-height: 100px;
         overflow-y: auto;
         border-bottom: 1px solid rgba(255,255,255,0.2);
-        padding-bottom: 10px;
+        padding-bottom: 8px;
+        font-size: 0.8rem;
       }
 
-      .checkout-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      @keyframes slideInRight { 
+        from { right: -300px; opacity: 0; } 
+        to { right: 20px; opacity: 1; } 
       }
 
-      .btn-checkout {
-        background: white;
-        color: var(--primary);
-        border: none;
-        padding: 8px 20px;
-        border-radius: 50px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-      }
-      .btn-checkout:hover { background: var(--light); }
-
-      @keyframes slideUp { from { bottom: -100px; } to { bottom: 30px; } }
       @media (max-width: 992px) { .nav-links { display: none; } }
     </style>
   </head>
@@ -128,10 +113,15 @@
     </section>
 
     <div id="cartStatus" class="cart-notif">
+      <div style="font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px;">
+        🛒 Pesanan Kamu
+      </div>
       <div id="cartList"></div>
-      <div class="checkout-row">
-        <span>Total: <strong id="cartCount">0</strong> Pesanan</span>
-        <button class="btn-checkout" onclick="goToCheckout()">Checkout Sekarang</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+        <span style="font-size: 0.85rem;"><strong id="cartCount">0</strong> Item</span>
+        <button onclick="goToCheckout()" style="padding: 6px 15px; font-size: 0.8rem; background: white; color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer;">
+          Checkout
+        </button>
       </div>
     </div>
 
@@ -195,13 +185,11 @@
           status.style.display = 'block';
           count.innerText = keranjang.length;
 
-          // Kelompokkan produk agar rapi (Contoh: Espresso 2x)
           const ringkasan = {};
           keranjang.forEach(item => {
             ringkasan[item.nama] = (ringkasan[item.nama] || 0) + 1;
           });
 
-          // Tampilkan teks nama produk
           listContainer.innerHTML = Object.keys(ringkasan).map(nama => 
             `<div style="display:flex; justify-content:space-between; margin-bottom:4px;">
               <span>${nama}</span>
