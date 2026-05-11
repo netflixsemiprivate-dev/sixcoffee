@@ -48,16 +48,57 @@
       .product-card { background: var(--dark); padding: 25px; border-radius: 12px; text-align: center; border: 1px solid rgba(196, 155, 99, 0.1); }
       .product-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
       
-      /* Container Tombol */
       .button-group { display: flex; gap: 10px; margin-top: 10px; }
       .btn { flex: 1; padding: 10px; background-color: var(--primary); color: white; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
-      .btn-cancel { background-color: #2a2a2a; color: #ff4d4d; border: 1px solid #444; }
+      .btn-cancel { background-color: #2a2a2a; color: #ff4d4d; border: 1px solid #444; flex: 0.3; }
       .btn:hover { opacity: 0.8; }
-      .btn-cancel:hover { background-color: #333; }
 
-      .cart-notif { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 15px 30px; border-radius: 50px; z-index: 3000; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: none; cursor: pointer; animation: slideUp 0.4s ease; }
+      /* Floating Cart Update */
+      .cart-notif { 
+        position: fixed; 
+        bottom: 30px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        background: var(--primary); 
+        color: white; 
+        padding: 20px; 
+        border-radius: 20px; 
+        z-index: 3000; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        display: none; 
+        width: 90%; 
+        max-width: 400px;
+        animation: slideUp 0.4s ease; 
+      }
+      
+      #cartList {
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        max-height: 120px;
+        overflow-y: auto;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        padding-bottom: 10px;
+      }
+
+      .checkout-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .btn-checkout {
+        background: white;
+        color: var(--primary);
+        border: none;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .btn-checkout:hover { background: var(--light); }
+
       @keyframes slideUp { from { bottom: -100px; } to { bottom: 30px; } }
-
       @media (max-width: 992px) { .nav-links { display: none; } }
     </style>
   </head>
@@ -86,8 +127,12 @@
       </div>
     </section>
 
-    <div id="cartStatus" class="cart-notif" onclick="goToCheckout()">
-      <span id="cartCount">0</span> Pesanan | <strong>Checkout</strong>
+    <div id="cartStatus" class="cart-notif">
+      <div id="cartList"></div>
+      <div class="checkout-row">
+        <span>Total: <strong id="cartCount">0</strong> Pesanan</span>
+        <button class="btn-checkout" onclick="goToCheckout()">Checkout Sekarang</button>
+      </div>
     </div>
 
     <script>
@@ -133,10 +178,9 @@
       }
 
       function hapusSatuDariKeranjang(nama) {
-        // Cari posisi produk terakhir yang ditambahkan dengan nama tersebut
         const index = keranjang.map(e => e.nama).lastIndexOf(nama);
         if (index > -1) {
-          keranjang.splice(index, 1); // Hapus hanya satu item
+          keranjang.splice(index, 1);
         }
         updateUI();
       }
@@ -145,10 +189,26 @@
         localStorage.setItem('sixcoffee_cart', JSON.stringify(keranjang));
         const status = document.getElementById('cartStatus');
         const count = document.getElementById('cartCount');
+        const listContainer = document.getElementById('cartList');
         
         if (keranjang.length > 0) {
           status.style.display = 'block';
           count.innerText = keranjang.length;
+
+          // Kelompokkan produk agar rapi (Contoh: Espresso 2x)
+          const ringkasan = {};
+          keranjang.forEach(item => {
+            ringkasan[item.nama] = (ringkasan[item.nama] || 0) + 1;
+          });
+
+          // Tampilkan teks nama produk
+          listContainer.innerHTML = Object.keys(ringkasan).map(nama => 
+            `<div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>${nama}</span>
+              <span>x${ringkasan[nama]}</span>
+            </div>`
+          ).join("");
+
         } else {
           status.style.display = 'none';
         }
