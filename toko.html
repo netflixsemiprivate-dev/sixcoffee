@@ -30,11 +30,7 @@
 
       #toko { padding: 120px 0 100px; background-color: var(--darker); min-height: 100vh; }
       
-      /* Style untuk Jam Live */
-      .live-clock-wrapper {
-        text-align: center;
-        margin-bottom: 30px;
-      }
+      .live-clock-wrapper { text-align: center; margin-bottom: 30px; }
       #timeDisplay {
         font-family: 'Poppins', sans-serif;
         font-size: 1.2rem;
@@ -78,23 +74,20 @@
     <section id="toko">
       <div class="container">
         <h2 style="text-align: center; color: var(--primary); margin-bottom: 10px;">Menu Pilihan</h2>
-        
         <div class="live-clock-wrapper">
           <div id="timeDisplay">00:00:00</div>
         </div>
-
         <div class="shop-grid" id="product-list"></div>
       </div>
     </section>
 
     <div id="cartStatus" class="cart-notif" onclick="goToCheckout()">
-      <span id="cartCount">0</span> Pesanan Terpilih | <strong>Checkout Sekarang</strong>
+      <span id="cartCount">0</span> Pesanan | <strong>Checkout</strong>
     </div>
 
     <script>
       let keranjang = [];
 
-      // Fungsi untuk Jam Live
       function startLiveClock() {
         const display = document.getElementById("timeDisplay");
         function update() {
@@ -110,31 +103,27 @@
 
       function renderProducts() {
         const data = [
-          { name: "Espresso Gold", price: "Rp 35k", img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=500&q=80" },
-          { name: "Vanilla Mist", price: "Rp 42k", img: "https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=500&q=80" },
-          { name: "Signature Arabica", price: "Rp 44k", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&q=80" },
-          { name: "Cloudy Macchiato", price: "Rp 45k", img: "https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=500&q=80" },
+          { name: "Espresso Gold", price: 35000, img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=500&q=80" },
+          { name: "Vanilla Mist", price: 42000, img: "https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=500&q=80" },
+          { name: "Signature Arabica", price: 44000, img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500&q=80" },
+          { name: "Cloudy Macchiato", price: 45000, img: "https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=500&q=80" },
         ];
         const grid = document.getElementById("product-list");
         grid.innerHTML = data.map(item => `
           <div class="product-card">
             <img src="${item.img}" class="product-img" alt="${item.name}">
             <h3>${item.name}</h3>
-            <p style="color: var(--primary); font-weight: bold; margin: 10px 0;">${item.price}</p>
-            <button class="btn" onclick="tambahKeKeranjang('${item.name}')">Beli</button>
+            <p style="color: var(--primary); font-weight: bold; margin: 10px 0;">Rp ${item.price.toLocaleString('id-ID')}</p>
+            <button class="btn" onclick="tambahKeKeranjang('${item.name}', ${item.price})">Beli</button>
           </div>
         `).join("");
       }
 
-      function tambahKeKeranjang(nama) {
-        keranjang.push(nama);
+      function tambahKeKeranjang(nama, harga) {
+        keranjang.push({ nama: nama, harga: harga });
         localStorage.setItem('sixcoffee_cart', JSON.stringify(keranjang));
-        
-        const status = document.getElementById('cartStatus');
-        const count = document.getElementById('cartCount');
-        
-        status.style.display = 'block';
-        count.innerText = keranjang.length;
+        document.getElementById('cartStatus').style.display = 'block';
+        document.getElementById('cartCount').innerText = keranjang.length;
       }
 
       function goToCheckout() {
@@ -143,7 +132,7 @@
 
       document.addEventListener("DOMContentLoaded", () => {
         localStorage.removeItem('sixcoffee_cart'); 
-        startLiveClock(); // Jalankan Jam
+        startLiveClock();
         renderProducts();
         lucide.createIcons();
       });
