@@ -13,7 +13,6 @@
         --dark: #121212;
         --darker: #0a0a0a;
         --light: #f4f4f4;
-        --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,58 +31,40 @@
       
       .live-clock-wrapper { text-align: center; margin-bottom: 30px; }
       #timeDisplay {
-        font-family: 'Poppins', sans-serif;
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--primary);
-        background: rgba(196, 155, 99, 0.1);
-        padding: 8px 25px;
-        border-radius: 50px;
-        border: 1px solid rgba(196, 155, 99, 0.3);
-        display: inline-block;
-        letter-spacing: 2px;
+        font-family: 'Poppins', sans-serif; font-size: 1.2rem; font-weight: 600; color: var(--primary);
+        background: rgba(196, 155, 99, 0.1); padding: 8px 25px; border-radius: 50px; border: 1px solid rgba(196, 155, 99, 0.3);
+        display: inline-block; letter-spacing: 2px;
       }
 
       .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 20px; }
       .product-card { background: var(--dark); padding: 25px; border-radius: 12px; text-align: center; border: 1px solid rgba(196, 155, 99, 0.1); }
       .product-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
       
-      .button-group { display: flex; gap: 10px; margin-top: 10px; }
-      .btn { flex: 1; padding: 10px; background-color: var(--primary); color: white; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
-      .btn-cancel { background-color: #2a2a2a; color: #ff4d4d; border: 1px solid #444; flex: 0.3; }
+      .btn { width: 100%; padding: 10px; background-color: var(--primary); color: white; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; margin-top: 10px; }
       .btn:hover { opacity: 0.8; }
 
-      /* --- STYLE KERANJANG DI POJOK KANAN --- */
+      /* Styling Keranjang (Pojok Kanan) */
       .cart-notif { 
-        position: fixed; 
-        bottom: 20px; 
-        right: 20px; 
-        background: rgba(196, 155, 99, 0.95); 
-        backdrop-filter: blur(8px);
-        color: white; 
-        padding: 15px; 
-        border-radius: 15px; 
-        z-index: 3000; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-        display: none; 
-        width: 260px; 
+        position: fixed; bottom: 20px; right: 20px; 
+        background: rgba(196, 155, 99, 0.98); backdrop-filter: blur(10px);
+        color: white; padding: 18px; border-radius: 15px; z-index: 3000; 
+        box-shadow: 0 10px 40px rgba(0,0,0,0.6); display: none; width: 280px; 
         animation: slideInRight 0.4s ease; 
       }
 
-      #cartList {
-        margin-bottom: 10px;
-        max-height: 100px;
-        overflow-y: auto;
-        border-bottom: 1px solid rgba(255,255,255,0.2);
-        padding-bottom: 8px;
-        font-size: 0.8rem;
-      }
+      #cartList { margin-bottom: 15px; max-height: 150px; overflow-y: auto; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; }
 
-      @keyframes slideInRight { 
-        from { right: -300px; opacity: 0; } 
-        to { right: 20px; opacity: 1; } 
+      /* Styling Tombol X di samping produk pesanan */
+      .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; }
+      .del-item { 
+        background: rgba(0,0,0,0.3); color: white; border: none; 
+        width: 22px; height: 22px; border-radius: 50%; font-size: 10px; 
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: 0.2s;
       }
+      .del-item:hover { background: #ff4d4d; }
 
+      @keyframes slideInRight { from { right: -350px; opacity: 0; } to { right: 20px; opacity: 1; } }
       @media (max-width: 992px) { .nav-links { display: none; } }
     </style>
   </head>
@@ -113,13 +94,13 @@
     </section>
 
     <div id="cartStatus" class="cart-notif">
-      <div style="font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px;">
-        🛒 Pesanan Kamu
+      <div style="font-weight: bold; font-size: 0.9rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+        <i data-lucide="shopping-cart" style="width: 16px;"></i> Pesanan Kamu
       </div>
       <div id="cartList"></div>
       <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
         <span style="font-size: 0.85rem;"><strong id="cartCount">0</strong> Item</span>
-        <button onclick="goToCheckout()" style="padding: 6px 15px; font-size: 0.8rem; background: white; color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer;">
+        <button onclick="goToCheckout()" style="padding: 7px 18px; font-size: 0.8rem; background: white; color: var(--primary); border: none; border-radius: 50px; font-weight: bold; cursor: pointer;">
           Checkout
         </button>
       </div>
@@ -154,10 +135,7 @@
             <img src="${item.img}" class="product-img" alt="${item.name}">
             <h3>${item.name}</h3>
             <p style="color: var(--primary); font-weight: bold; margin: 10px 0;">Rp ${item.price.toLocaleString('id-ID')}</p>
-            <div class="button-group">
-              <button class="btn" onclick="tambahKeKeranjang('${item.name}', ${item.price})">Beli</button>
-              <button class="btn btn-cancel" onclick="hapusSatuDariKeranjang('${item.name}')">X</button>
-            </div>
+            <button class="btn" onclick="tambahKeKeranjang('${item.name}', ${item.price})">Beli Sekarang</button>
           </div>
         `).join("");
       }
@@ -191,9 +169,9 @@
           });
 
           listContainer.innerHTML = Object.keys(ringkasan).map(nama => 
-            `<div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-              <span>${nama}</span>
-              <span>x${ringkasan[nama]}</span>
+            `<div class="cart-item">
+              <span>${nama} <small>(x${ringkasan[nama]})</small></span>
+              <button class="del-item" onclick="hapusSatuDariKeranjang('${nama}')">X</button>
             </div>`
           ).join("");
 
