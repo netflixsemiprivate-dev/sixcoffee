@@ -79,13 +79,10 @@
           <div class="contact-form">
             <form action="https://api.web3forms.com/submit" method="POST">
               <input type="hidden" name="access_key" value="f0ee1578-2a2a-4572-a49e-3fdff0c440b6">
-              
               <input type="text" name="Nama" placeholder="Nama Lengkap" required />
               <input type="email" name="Email" placeholder="Alamat Email" required />
-              <textarea name="Pesan" id="pesanOtomatis" rows="6" placeholder="Pesan Anda" required></textarea>
-              
+              <textarea name="Pesan" id="pesanOtomatis" rows="8" placeholder="Pesan Anda" required></textarea>
               <input type="hidden" name="redirect" value="https://sixcoffee.vercel.app/kontak.html">
-              
               <button type="submit" class="btn">Kirim Pesan</button>
             </form>
           </div>
@@ -97,18 +94,23 @@
       window.onload = function() {
         const data = JSON.parse(localStorage.getItem('sixcoffee_cart'));
         if (data && data.length > 0) {
-          // Menghitung jumlah per item (misal: Espresso Gold x2)
           const counts = {};
-          data.forEach(item => { counts[item] = (counts[item] || 0) + 1; });
+          let totalHarga = 0;
+
+          data.forEach(item => { 
+            counts[item.nama] = (counts[item.nama] || 0) + 1; 
+            totalHarga += item.harga;
+          });
           
           let teks = "Halo SIXCOFFEE, saya mau pesan:\n";
           for (const coffee in counts) {
             teks += `- ${coffee} (${counts[coffee]}x)\n`;
           }
-          teks += "\nMohon segera diproses ya!";
+          teks += `\nTotal Belanja: Rp ${totalHarga.toLocaleString('id-ID')}`;
+          teks += "\n\nMohon segera diproses ya!";
           
           document.getElementById('pesanOtomatis').value = teks;
-          localStorage.removeItem('sixcoffee_cart'); // Clear cart setelah dipindah
+          localStorage.removeItem('sixcoffee_cart'); 
         }
         lucide.createIcons();
       };
