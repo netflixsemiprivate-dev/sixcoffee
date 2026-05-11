@@ -47,8 +47,13 @@
       .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 20px; }
       .product-card { background: var(--dark); padding: 25px; border-radius: 12px; text-align: center; border: 1px solid rgba(196, 155, 99, 0.1); }
       .product-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
-      .btn { display: inline-block; padding: 10px 20px; background-color: var(--primary); color: white; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; width: 100%; transition: 0.3s; }
+      
+      /* Container Tombol */
+      .button-group { display: flex; gap: 10px; margin-top: 10px; }
+      .btn { flex: 1; padding: 10px; background-color: var(--primary); color: white; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; }
+      .btn-cancel { background-color: #2a2a2a; color: #ff4d4d; border: 1px solid #444; }
       .btn:hover { opacity: 0.8; }
+      .btn-cancel:hover { background-color: #333; }
 
       .cart-notif { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 15px 30px; border-radius: 50px; z-index: 3000; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: none; cursor: pointer; animation: slideUp 0.4s ease; }
       @keyframes slideUp { from { bottom: -100px; } to { bottom: 30px; } }
@@ -114,16 +119,39 @@
             <img src="${item.img}" class="product-img" alt="${item.name}">
             <h3>${item.name}</h3>
             <p style="color: var(--primary); font-weight: bold; margin: 10px 0;">Rp ${item.price.toLocaleString('id-ID')}</p>
-            <button class="btn" onclick="tambahKeKeranjang('${item.name}', ${item.price})">Beli</button>
+            <div class="button-group">
+              <button class="btn" onclick="tambahKeKeranjang('${item.name}', ${item.price})">Beli</button>
+              <button class="btn btn-cancel" onclick="hapusSatuDariKeranjang('${item.name}')">X</button>
+            </div>
           </div>
         `).join("");
       }
 
       function tambahKeKeranjang(nama, harga) {
         keranjang.push({ nama: nama, harga: harga });
+        updateUI();
+      }
+
+      function hapusSatuDariKeranjang(nama) {
+        // Cari posisi produk terakhir yang ditambahkan dengan nama tersebut
+        const index = keranjang.map(e => e.nama).lastIndexOf(nama);
+        if (index > -1) {
+          keranjang.splice(index, 1); // Hapus hanya satu item
+        }
+        updateUI();
+      }
+
+      function updateUI() {
         localStorage.setItem('sixcoffee_cart', JSON.stringify(keranjang));
-        document.getElementById('cartStatus').style.display = 'block';
-        document.getElementById('cartCount').innerText = keranjang.length;
+        const status = document.getElementById('cartStatus');
+        const count = document.getElementById('cartCount');
+        
+        if (keranjang.length > 0) {
+          status.style.display = 'block';
+          count.innerText = keranjang.length;
+        } else {
+          status.style.display = 'none';
+        }
       }
 
       function goToCheckout() {
