@@ -29,13 +29,31 @@
       .nav-links a.active { color: var(--primary); opacity: 1; }
 
       #toko { padding: 120px 0 100px; background-color: var(--darker); min-height: 100vh; }
-      .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 50px; }
+      
+      /* Style untuk Jam Live */
+      .live-clock-wrapper {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      #timeDisplay {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary);
+        background: rgba(196, 155, 99, 0.1);
+        padding: 8px 25px;
+        border-radius: 50px;
+        border: 1px solid rgba(196, 155, 99, 0.3);
+        display: inline-block;
+        letter-spacing: 2px;
+      }
+
+      .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 20px; }
       .product-card { background: var(--dark); padding: 25px; border-radius: 12px; text-align: center; border: 1px solid rgba(196, 155, 99, 0.1); }
       .product-img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
       .btn { display: inline-block; padding: 10px 20px; background-color: var(--primary); color: white; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; width: 100%; transition: 0.3s; }
       .btn:hover { opacity: 0.8; }
 
-      /* Floating Cart */
       .cart-notif { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 15px 30px; border-radius: 50px; z-index: 3000; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: none; cursor: pointer; animation: slideUp 0.4s ease; }
       @keyframes slideUp { from { bottom: -100px; } to { bottom: 30px; } }
 
@@ -59,7 +77,12 @@
 
     <section id="toko">
       <div class="container">
-        <h2 style="text-align: center; color: var(--primary)">Menu Pilihan</h2>
+        <h2 style="text-align: center; color: var(--primary); margin-bottom: 10px;">Menu Pilihan</h2>
+        
+        <div class="live-clock-wrapper">
+          <div id="timeDisplay">00:00:00</div>
+        </div>
+
         <div class="shop-grid" id="product-list"></div>
       </div>
     </section>
@@ -70,6 +93,20 @@
 
     <script>
       let keranjang = [];
+
+      // Fungsi untuk Jam Live
+      function startLiveClock() {
+        const display = document.getElementById("timeDisplay");
+        function update() {
+          const now = new Date();
+          let h = String(now.getHours()).padStart(2, '0');
+          let m = String(now.getMinutes()).padStart(2, '0');
+          let s = String(now.getSeconds()).padStart(2, '0');
+          display.innerText = `${h}:${m}:${s}`;
+        }
+        setInterval(update, 1000);
+        update();
+      }
 
       function renderProducts() {
         const data = [
@@ -105,7 +142,8 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        localStorage.removeItem('sixcoffee_cart'); // Reset cart saat buka toko baru
+        localStorage.removeItem('sixcoffee_cart'); 
+        startLiveClock(); // Jalankan Jam
         renderProducts();
         lucide.createIcons();
       });
